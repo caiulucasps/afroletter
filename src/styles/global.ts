@@ -8,6 +8,8 @@ export default createGlobalStyle`
   }
 
   body {
-    font-family: 'Catamaran', sans-serif;
+    background-color: ${({ theme }) => theme.colors.GRAY_900};
+    font-family: ${({ theme }) => theme.fonts.SECONDARY};
+    color: ${({ theme }) => theme.colors.GRAY_100};
   }
 `;
