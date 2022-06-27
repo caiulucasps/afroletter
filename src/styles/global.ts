@@ -19,7 +19,7 @@ export default createGlobalStyle`
 
   body {
     background-color: ${({ theme }) => theme.colors.GRAY_900};
-    font-family: ${({ theme }) => theme.fonts.SECONDARY};
+    font-family: ${({ theme }) => theme.fonts.PRIMARY};
     color: ${({ theme }) => theme.colors.GRAY_100};
   }
 `;
