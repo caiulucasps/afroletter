@@ -6,10 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "slicemachine": "start-slicemachine"
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@prismicio/client": "^6.6.1",
+    "@prismicio/helpers": "^2.3.1",
+    "@prismicio/react": "^2.4.2",
+    "@prismicio/slice-simulator-react": "^0.2.2",
     "next": "12.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -26,6 +31,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.1.0",
     "prettier": "^2.7.1",
+    "slice-machine-ui": "^0.4.0",
     "typescript": "4.7.4"
   }
 }

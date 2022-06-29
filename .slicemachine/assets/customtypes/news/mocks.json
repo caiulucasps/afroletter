@@ -1,0 +1,25 @@
+{
+  "id": "8c1bfc96-0cf4-4ed1-88dd-8cdca92c429f",
+  "uid": "esse-sed-doloribus",
+  "type": "news",
+  "data": {
+    "banner": {
+      "dimensions": {
+        "width": 900,
+        "height": 500
+      },
+      "alt": "Placeholder image",
+      "copyright": null,
+      "url": "https://images.unsplash.com/photo-1587653915936-5623ea0b949a?w=900&h=500&fit=crop"
+    },
+    "title": "matrix cross-media communities",
+    "author": "redefine sticky platforms",
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Ea Lorem do occaecat cupidatat sint sit qui eu ullamco amet excepteur. Amet laboris aliquip qui pariatur esse quis aute mollit aliquip cupidatat et pariatur.",
+        "spans": []
+      }
+    ]
+  }
+}

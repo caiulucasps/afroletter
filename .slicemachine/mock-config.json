@@ -1,0 +1,12 @@
+{
+  "_cts": {
+    "news": {
+      "content": {
+        "config": {
+          "patternType": "PARAGRAPH",
+          "blocks": 1
+        }
+      }
+    }
+  }
+}
