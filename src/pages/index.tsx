@@ -8,8 +8,8 @@ import { ptBR } from 'date-fns/locale';
 import { Container, NewsCard } from '../styles/IndexStyle';
 import { createClient } from '../../prismicio';
 
-interface NewsProps {
-  news: {
+interface HomeProps {
+  posts: {
     uid: string;
     title: string;
     author: string;
@@ -18,7 +18,7 @@ interface NewsProps {
   }[];
 }
 
-const Home: NextPage<NewsProps> = ({ news }) => {
+const Home: NextPage<HomeProps> = ({ posts }) => {
   return (
     <Container>
       <Head>
@@ -26,21 +26,21 @@ const Home: NextPage<NewsProps> = ({ news }) => {
       </Head>
 
       <ul>
-        {news.map((singleNews) => (
-          <NewsCard key={singleNews.uid}>
-            <Link href={`news/${singleNews.uid}`}>
-              <h2>{singleNews.title}</h2>
+        {posts.map((post) => (
+          <NewsCard key={post.uid}>
+            <Link href={`news/${post.uid}`}>
+              <h2>{post.title}</h2>
             </Link>
-            <p>{singleNews.firstParagraph}</p>
+            <p>{post.firstParagraph}</p>
 
             <div>
               <p>
                 <UserOutlined />
-                {singleNews.author}
+                {post.author}
               </p>
               <time>
                 <CalendarOutlined />
-                {singleNews.publicationDate}
+                {post.publicationDate}
               </time>
             </div>
           </NewsCard>
@@ -53,23 +53,23 @@ const Home: NextPage<NewsProps> = ({ news }) => {
 export const getStaticProps: GetStaticProps = async () => {
   const client = createClient();
 
-  const news = await client.getAllByType('news');
+  const posts = await client.getAllByType('news');
 
-  const formattedNews = news.map((singleNews) => {
+  const formattedPosts = posts.map((post) => {
     const publicationDate = format(
-      new Date(singleNews.last_publication_date),
+      new Date(post.last_publication_date),
       "dd 'de' MMMM 'de' Y",
       { locale: ptBR }
     );
 
-    const firstParagraph = singleNews.data.content.find(
+    const firstParagraph = post.data.content.find(
       (line: { type: string }) => line.type === 'paragraph'
     );
 
     return {
-      uid: singleNews.uid,
-      title: singleNews.data.title,
-      author: singleNews.data.author,
+      uid: post.uid,
+      title: post.data.title,
+      author: post.data.author,
       publicationDate,
       firstParagraph: firstParagraph.text,
     };
@@ -77,8 +77,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: {
-      prismicNews: news,
-      news: formattedNews,
+      posts: formattedPosts,
     },
     revalidate: 60 * 60 * 24, // 24h
   };
