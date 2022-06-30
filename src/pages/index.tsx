@@ -28,7 +28,7 @@ const Home: NextPage<NewsProps> = ({ news }) => {
       <ul>
         {news.map((singleNews) => (
           <NewsCard key={singleNews.uid}>
-            <Link href="news">
+            <Link href={`news/${singleNews.uid}`}>
               <h2>{singleNews.title}</h2>
             </Link>
             <p>{singleNews.firstParagraph}</p>

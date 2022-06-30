@@ -7,7 +7,7 @@ import {
   ClockCircleOutlined,
 } from '@ant-design/icons';
 
-import { Container, Info, Content } from '../styles/NewsStyle';
+import { Container, Info, Content } from '../../styles/NewsStyle';
 
 const News: NextPage = () => {
   return (
