@@ -1,5 +1,12 @@
-import { NextPage } from 'next';
+import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
 import Image from 'next/image';
+
+import { asText } from '@prismicio/helpers';
+import { PrismicRichText } from '@prismicio/react';
+import { RichTextField } from '@prismicio/types';
+
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 import {
   UserOutlined,
@@ -8,64 +15,58 @@ import {
 } from '@ant-design/icons';
 
 import { Container, Info, Content } from '../../styles/NewsStyle';
+import { createClient } from '../../../prismicio';
 
-const News: NextPage = () => {
+interface NewsProps {
+  post: {
+    title: string;
+    author: string;
+    banner: {
+      url: string;
+      alt: string;
+    };
+    content: RichTextField;
+    publicationDate: string;
+  };
+}
+
+const News: NextPage<NewsProps> = ({ post }) => {
+  const readingTime = Math.ceil(asText(post.content).split(' ').length / 260);
+
+  console.log(readingTime);
   return (
     <main>
       <Image
-        src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+        src={post.banner.url}
         layout="responsive"
         objectFit="cover"
         height="16rem"
         width="100vw"
-        alt="banner"
+        alt={post.banner.alt}
       />
 
       <Container>
         <Info>
-          <h1>Learning Next.js with Typescript and eslint</h1>
+          <h1>{post.title}</h1>
 
           <div>
             <p>
               <UserOutlined />
-              Caio Lucas
+              {post.author}
             </p>
             <time>
               <CalendarOutlined />
-              01 de agosto de 2022
+              {post.publicationDate}
             </time>
             <time>
               <ClockCircleOutlined />
-              10 min
+              {readingTime} min
             </time>
           </div>
         </Info>
 
         <Content>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis
-          commodo odio aenean sed adipiscing diam. At ultrices mi tempus
-          imperdiet nulla. Purus semper eget duis at tellus. Eu volutpat odio
-          facilisis mauris sit. Nec dui nunc mattis enim ut tellus. At erat
-          pellentesque adipiscing commodo elit at imperdiet. Velit dignissim
-          sodales ut eu sem integer vitae. Tellus rutrum tellus pellentesque eu
-          tincidunt tortor aliquam nulla. Eu scelerisque felis imperdiet proin.
-          Imperdiet proin fermentum leo vel orci porta non pulvinar. Nullam eget
-          felis eget nunc lobortis mattis aliquam. Neque viverra justo nec
-          ultrices dui sapien eget mi proin. Cursus risus at ultrices mi tempus
-          imperdiet. Gravida in fermentum et sollicitudin ac. Faucibus
-          scelerisque eleifend donec pretium vulputate sapien nec sagittis.
-          Turpis nunc eget lorem dolor sed viverra ipsum nunc. Euismod lacinia
-          at quis risus sed vulputate odio ut. Mauris pharetra et ultrices neque
-          ornare aenean euismod elementum nisi. Diam quis enim lobortis
-          scelerisque fermentum dui faucibus in. Vulputate eu scelerisque felis
-          imperdiet proin fermentum. Morbi blandit cursus risus at ultrices mi
-          tempus. Posuere lorem ipsum dolor sit amet consectetur adipiscing elit
-          duis. Facilisis magna etiam tempor orci eu lobortis elementum nibh. Id
-          diam maecenas ultricies mi eget mauris pharetra. Commodo viverra
-          maecenas accumsan lacus vel facilisis volutpat est velit. Tincidunt
-          lobortis feugiat vivamus at augue eget arcu dictum. Lobortis mattis
-          aliquam faucibus purus in massa.
+          <PrismicRichText field={post.content} />
         </Content>
       </Container>
     </main>
@@ -73,3 +74,46 @@ const News: NextPage = () => {
 };
 
 export default News;
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const client = createClient();
+
+  const post = await client.getAllByType('news');
+
+  const paths = post.map((singleNew) => {
+    return { params: { uid: String(singleNew.uid) } };
+  });
+
+  return { fallback: true, paths };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const client = createClient();
+
+  const { uid } = params as { uid: string };
+
+  const post = await client.getByUID('news', uid);
+
+  const publicationDate = format(
+    new Date(post.last_publication_date),
+    "dd 'de' MMMM 'de' Y",
+    { locale: ptBR }
+  );
+
+  const formattedPost = {
+    title: post.data.title,
+    author: post.data.author,
+    banner: {
+      url: post.data.banner.url,
+      alt: post.data.banner.alt,
+    },
+    content: post.data.content,
+    publicationDate,
+  };
+
+  return {
+    props: {
+      post: formattedPost,
+    },
+  };
+};
