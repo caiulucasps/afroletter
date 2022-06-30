@@ -23,6 +23,11 @@ export const NewsCard = styled.li`
 
   h2 {
     font-size: 1.5rem;
+    cursor: pointer;
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.BLUE_500};
+    }
   }
 
   > p {
@@ -30,6 +35,12 @@ export const NewsCard = styled.li`
     color: ${({ theme }) => theme.colors.GRAY_200};
     line-height: 140%;
     margin: 1rem 0;
+
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
   div {
