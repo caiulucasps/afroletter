@@ -1,66 +1,82 @@
-import type { NextPage } from 'next';
+import type { NextPage, GetStaticProps } from 'next';
 import { UserOutlined, CalendarOutlined } from '@ant-design/icons';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 import { Container, NewsCard } from '../styles/IndexStyle';
+import { createClient } from '../../prismicio';
+import Link from 'next/link';
 
-const Home: NextPage = () => {
+interface NewsProps {
+  news: {
+    uid: string;
+    title: string;
+    author: string;
+    publicationDate: string;
+    firstParagraph: string;
+  }[];
+}
+
+const Home: NextPage<NewsProps> = ({ news }) => {
   return (
     <Container>
       <ul>
-        <NewsCard>
-          <h2>Learning Next.js with Typescript and eslint</h2>
-          <p>
-            This is a simple description example for a newsletter prototype
-            project in figma. The only functionality of this text is pass a
-            simple view of how things are going to be in the application.
-          </p>
+        {news.map((singleNews) => (
+          <NewsCard key={singleNews.uid}>
+            <Link href="news">
+              <h2>{singleNews.title}</h2>
+            </Link>
+            <p>{singleNews.firstParagraph}</p>
 
-          <div>
-            <p>
-              <UserOutlined /> Caio Lucas
-            </p>
-            <time>
-              <CalendarOutlined /> 01 de agosto de 2022
-            </time>
-          </div>
-        </NewsCard>
-        <NewsCard>
-          <h2>Learning Next.js with Typescript and eslint</h2>
-          <p>
-            This is a simple description example for a newsletter prototype
-            project in figma. The only functionality of this text is pass a
-            simple view of how things are going to be in the application.
-          </p>
-
-          <div>
-            <p>
-              <UserOutlined /> Caio Lucas
-            </p>
-            <time>
-              <CalendarOutlined /> 01 de agosto de 2022
-            </time>
-          </div>
-        </NewsCard>
-        <NewsCard>
-          <h2>Learning Next.js with Typescript and eslint</h2>
-          <p>
-            This is a simple description example for a newsletter prototype
-            project in figma. The only functionality of this text is pass a
-            simple view of how things are going to be in the application.
-          </p>
-
-          <div>
-            <p>
-              <UserOutlined /> Caio Lucas
-            </p>
-            <time>
-              <CalendarOutlined /> 01 de agosto de 2022
-            </time>
-          </div>
-        </NewsCard>
+            <div>
+              <p>
+                <UserOutlined />
+                {singleNews.author}
+              </p>
+              <time>
+                <CalendarOutlined />
+                {singleNews.publicationDate}
+              </time>
+            </div>
+          </NewsCard>
+        ))}
       </ul>
     </Container>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const client = createClient();
+
+  const news = await client.getAllByType('news');
+
+  const formattedNews = news.map((singleNews) => {
+    const publicationDate = format(
+      new Date(singleNews.last_publication_date),
+      "dd 'de' MMMM 'de' Y",
+      { locale: ptBR }
+    );
+
+    const firstParagraph = singleNews.data.content.find(
+      (line: { type: string }) => line.type === 'paragraph'
+    );
+
+    return {
+      uid: singleNews.uid,
+      title: singleNews.data.title,
+      author: singleNews.data.author,
+      publicationDate,
+      firstParagraph: firstParagraph.text,
+    };
+  });
+
+  return {
+    props: {
+      prismicNews: news,
+      news: formattedNews,
+    },
+    revalidate: 60 * 60 * 24, // 24h
+  };
 };
 
 export default Home;
