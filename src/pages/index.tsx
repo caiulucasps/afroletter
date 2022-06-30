@@ -1,12 +1,12 @@
 import type { NextPage, GetStaticProps } from 'next';
+import Link from 'next/link';
+import Head from 'next/head';
 import { UserOutlined, CalendarOutlined } from '@ant-design/icons';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 import { Container, NewsCard } from '../styles/IndexStyle';
 import { createClient } from '../../prismicio';
-import Link from 'next/link';
-import Head from 'next/head';
 
 interface NewsProps {
   news: {
@@ -22,7 +22,7 @@ const Home: NextPage<NewsProps> = ({ news }) => {
   return (
     <Container>
       <Head>
-        <title>AfroLetter - A sua newsletter de confiança</title>
+        <title>AfroLetter | A sua newsletter de confiança</title>
       </Head>
 
       <ul>
