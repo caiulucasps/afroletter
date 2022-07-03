@@ -1,4 +1,5 @@
 import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 
 import { asText } from '@prismicio/helpers';
@@ -36,6 +37,9 @@ const News: NextPage<NewsProps> = ({ post }) => {
   console.log(readingTime);
   return (
     <main>
+      <Head>
+        <title>AfroLetter | {post.title}</title>
+      </Head>
       <Image
         src={post.banner.url}
         layout="responsive"
