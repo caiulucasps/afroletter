@@ -17,6 +17,7 @@ import {
 
 import { Container, Info, Content } from '../../styles/NewsStyle';
 import { createClient } from '../../../prismicio';
+import { useRouter } from 'next/router';
 
 interface NewsProps {
   post: {
@@ -32,47 +33,56 @@ interface NewsProps {
 }
 
 const News: NextPage<NewsProps> = ({ post }) => {
-  const readingTime = Math.ceil(asText(post.content).split(' ').length / 260);
+  const { isFallback } = useRouter();
 
-  console.log(readingTime);
+  const readingTime = !isFallback
+    ? Math.ceil(asText(post.content).split(' ').length / 260)
+    : 0;
+
   return (
     <main>
-      <Head>
-        <title>AfroLetter | {post.title}</title>
-      </Head>
-      <Image
-        src={post.banner.url}
-        layout="responsive"
-        objectFit="cover"
-        height="16rem"
-        width="100vw"
-        alt={post.banner.alt}
-      />
+      {!isFallback ? (
+        <>
+          <Head>
+            <title>AfroLetter | {post.title}</title>
+          </Head>
+          <Image
+            src={post.banner.url}
+            layout="responsive"
+            objectFit="cover"
+            height="16rem"
+            width="100vw"
+            alt={post.banner.alt}
+          />
 
-      <Container>
-        <Info>
-          <h1>{post.title}</h1>
+          <Container>
+            <Info>
+              <h1>{post.title}</h1>
 
-          <div>
-            <p>
-              <UserOutlined />
-              {post.author}
-            </p>
-            <time>
-              <CalendarOutlined />
-              {post.publicationDate}
-            </time>
-            <time>
-              <ClockCircleOutlined />
-              {readingTime} min
-            </time>
-          </div>
-        </Info>
+              <div>
+                <p>
+                  <UserOutlined />
+                  {post.author}
+                </p>
+                <time>
+                  <CalendarOutlined />
+                  {post.publicationDate}
+                </time>
+                <time>
+                  <ClockCircleOutlined />
+                  {readingTime} min
+                </time>
+              </div>
+            </Info>
 
-        <Content>
-          <PrismicRichText field={post.content} />
-        </Content>
-      </Container>
+            <Content>
+              <PrismicRichText field={post.content} />
+            </Content>
+          </Container>
+        </>
+      ) : (
+        <p>Carregando...</p>
+      )}
     </main>
   );
 };
