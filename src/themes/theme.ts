@@ -10,5 +10,6 @@ export const theme = {
   fonts: {
     PRIMARY: 'Catamaran, sans-serif',
     SECONDARY: 'Rasa, serif',
+    CODE: 'Fira Code, monospace',
   },
 };

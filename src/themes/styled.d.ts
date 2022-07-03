@@ -12,6 +12,7 @@ declare module 'styled-components' {
     fonts: {
       PRIMARY: string;
       SECONDARY: string;
+      CODE: string;
     };
   }
 }
