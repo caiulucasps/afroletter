@@ -129,5 +129,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       post: formattedPost,
     },
+    revalidate: 60 * 60 * 24, // 24h
   };
 };
